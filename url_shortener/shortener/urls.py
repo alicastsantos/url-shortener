@@ -1,9 +1,13 @@
 from django.urls import path
 
 from . import views
-from .views import create_short_url
+from .views import handle_post
 
 urlpatterns = [
-    path("", create_short_url, name="create_short_url"),
-    path("<str:shortened_url>/", views.redirect_original, name="redirect_original"),
+    path("", handle_post, name="handle_post"),
+    path(
+        "<str:shortened_url>/",
+        views.redirect_to_original_url,
+        name="redirect_to_original_url",
+    ),
 ]
