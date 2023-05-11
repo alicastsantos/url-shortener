@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.views import View
 from .forms import URLShortenerForm
 from .models import URL
 
@@ -10,25 +9,22 @@ def index(request):
     return render(request, "shortener/index.html", {})
 
 
-def redirect_short_url(request, short_id):
-    short_url = get_object_or_404(URL, short_id=short_id)
-
-    short_url.access_count += 1
-    short_url.save()
-
-    return HttpResponseRedirect(short_url.original_url)
-
-
 def create_short_url(request):
     if request.method == "POST":
         form = URLShortenerForm(request.POST)
         if form.is_valid():
             original_url = form.data["original_url"]
-            print(original_url)
-            shortened_url = URL.objects.create(original_url=original_url)
-            shortened_url.save()
+            url_obj = URL.objects.filter(original_url=original_url).first()
+            if url_obj:
+                shortened_url = url_obj.short_url
+                print("existent_register:", shortened_url)
+            else:
+                url_obj = URL.objects.create(original_url=original_url)
+                shortened_url = url_obj.short_url
+                print("Nonexistent_register:", shortened_url)
+
             redirect_url = reverse(
-                "redirect_original", kwargs={"short_url": shortened_url.short_url}
+                "redirect_original", kwargs={"shortened_url": shortened_url}
             )
             return render(
                 request,
@@ -41,7 +37,8 @@ def create_short_url(request):
 
 
 def redirect_original(request, shortened_url):
-    url = get_object_or_404(URL, short_url=shortened_url)
-    url.visits += 1
+    original_url = URL.objects.filter(short_url=shortened_url).first().original_url
+    url = get_object_or_404(URL, original_url=original_url)
+    url.access_count += 1
     url.save()
-    return redirect(url.original_url)
+    return HttpResponseRedirect("https://" + url.original_url)

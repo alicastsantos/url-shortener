@@ -52,12 +52,11 @@
       {% if shortened_url %}
       <h6>
         <br>
-          Your shortened URL is:
+        Your shortened URL is:
       </h6>
       <span>
-       {{ shortened_url.short_url }} =>
-        <a href="{% url 'redirect_original' short_url=shortened_url.short_url %}">
-          {{ shortened_url.short_url }}
+        <a href="{% url 'redirect_original' shortened_url=shortened_url %}" target="_blank">
+          {{ shortened_url }}
         </a>
       </span>
       {% endif %}
