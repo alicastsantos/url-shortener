@@ -1,7 +1,9 @@
 import string
 import random
+from datetime import datetime, date, time
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 
 def generate_random_string(length):
@@ -14,6 +16,7 @@ class URL(models.Model):
     short_url = models.CharField(max_length=8, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     access_count = models.PositiveIntegerField(default=0)
+    last_access = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.original_url
@@ -35,3 +38,8 @@ class URL(models.Model):
                     self.short_url = short_url
                     break
         super().save(*args, **kwargs)
+
+    def update_last_access(self):
+        self.last_access = timezone.now()
+        self.access_count += 1
+        self.save()

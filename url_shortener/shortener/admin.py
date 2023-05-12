@@ -5,9 +5,15 @@ from .models import URL
 
 
 class URLAdmin(admin.ModelAdmin):
-    list_display = ("original_url", "short_url", "created_at", "access_count")
+    list_display = (
+        "original_url",
+        "short_url",
+        "access_count",
+        "created_at",
+        "last_access",
+    )
+    readonly_fields = list_display
     search_fields = ("original_url", "short_url")
-    readonly_fields = ("short_url", "access_count", "created_at")
 
     def delete_selected(self, request, queryset):
         queryset.delete()
