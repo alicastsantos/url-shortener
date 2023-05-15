@@ -1,7 +1,7 @@
-import string
 import random
-from datetime import datetime, date, time
+import string
 from django.db import models
+from django.forms import ValidationError
 from django.urls import reverse
 from django.utils import timezone
 
@@ -31,6 +31,8 @@ class URL(models.Model):
         return reverse("url_detail", args=[str(self.id)])
 
     def save(self, *args, **kwargs):
+        if not self.original_url:
+            raise ValidationError("Please enter a URL")
         if not self.short_url:
             while True:
                 short_url = self.generate_short_url()

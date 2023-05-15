@@ -32,6 +32,7 @@
     {% block content %}
     <title>URL Shortener!</title>
   </head>
+  <link rel="shortcut icon" href="#">
   <body class="container pt-5">
     <div class="card text-center">
       <div class="card-header">
@@ -41,10 +42,9 @@
         <form method="POST" action="{% url 'handle_post' %}">
           {% csrf_token %}
           <div class="input-container">
-            <label for="original_url">URL to shorten:</label>
-            <input type="text" id="original_url" name="original_url">
+            {{ form }}
             <button type="submit" class="button">
-              <b>Vai filhão</b>
+              <b>Ok</b>
             </button>
           </div>
         </form>

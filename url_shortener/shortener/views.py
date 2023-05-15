@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 from .forms import URLShortenerForm
 from .models import URL
 
@@ -19,7 +19,11 @@ def handle_post(request):
             return render(
                 request,
                 "shortener/index.html",
-                {"shortened_url": shortened_url, "original_url": original_url},
+                {
+                    "shortened_url": shortened_url,
+                    "original_url": original_url,
+                    "form": form,
+                },
             )
     else:
         form = URLShortenerForm()
